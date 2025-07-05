@@ -8,3 +8,6 @@
 *.json
 *.db
 *.log
+api/obj/
+api/bin/
+.gitignore
