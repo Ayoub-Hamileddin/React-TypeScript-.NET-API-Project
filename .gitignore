@@ -1,0 +1,10 @@
+/bin/
+/obj/
+/*.user
+*.dll
+*.exe
+*.pdb
+*.cache
+*.json
+*.db
+*.log
