@@ -34,6 +34,11 @@ namespace api.Repository
             return stockModel ;
         }
 
+        public async Task<bool> ExcitingStock(int id)
+        {
+            return await _context.Stocks.AnyAsync(c => c.Id == id);
+        }
+
         public Task<List<Stock>> GetAllAsync()
         {
           return  _context.Stocks.Include(c=>c.Comments).ToListAsync();
