@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using api.Data;
 using api.Dtos.Stock;
+using api.Helpers;
 using api.Interfaces;
 using api.Mappers;
 using Microsoft.AspNetCore.Mvc;
@@ -26,9 +27,9 @@ namespace api.controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetAllAsync() //IActionResult  it's a type of result like 404 NotFound()
+        public async Task<IActionResult> GetAllAsync([FromQuery] QueryObject query) //IActionResult  it's a type of result like 404 NotFound()
         {
-            var stocks = await _stockRepo.GetAllAsync();
+            var stocks = await _stockRepo.GetAllAsync(query);
             var stockDto=stocks.Select(c => c.ToStockDto());
             return Ok(stocks);
         }
@@ -50,6 +51,9 @@ namespace api.controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateStockRequestDto StockDto)
         {
+             if(!ModelState.IsValid){
+                return BadRequest(ModelState);
+            }
             var stockModel = StockDto.ToStockFromCreateDto();
             await _stockRepo.CreateAsync(stockModel);
              return CreatedAtAction(nameof(GetById), new { id = stockModel.Id }, stockModel.ToStockDto());
@@ -58,7 +62,11 @@ namespace api.controllers
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateStockRequestDto updateDto)
-        {
+        {   
+             if(!ModelState.IsValid){
+                return BadRequest(ModelState);
+               }
+
            var stockModel= await _stockRepo.UpdateAsync(id, updateDto);
             if (stockModel == null)
             {
